@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="trip-planner">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trip Planner</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body class="dark">
+
+<div class="parent">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title"><title>Trip Planner</title></div>
+
+    <ul class="sidebar-list">
+      <li class="mount">
+        <a href="index.html">
+          <img src="mount.png" alt="New Trip icon">
+          <span class="sidebar-link-text">New Trip</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-section">
+      <div class="sidebar-subtitle">
+        <img src="trip.png" alt="My Trips icon">My Trips
+      </div>
+      <ul id="tripList" class="sidebar-list sidebar-list-small"></ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-subtitle">
+        <img src="fav_2.png" alt="Favourites icon">Favourites
+      </div>
+      <ul id="favouriteList" class="sidebar-list sidebar-list-small"></ul>
+    </div>
+  </aside>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="logo.png" alt="website_logo">
+    </div>
+
+    <div class="menu-items">
+      <div class="dropdown">
+        <button class="dropdown-btn">Trip Planner ▾</button>
+        <div class="dropdown-content">
+          <a href="index.html">Day Out</a>
+          <a href="trip-planner.html">Trip Planner</a>
+        </div>
+      </div>
+
+      <button id="shareTripBtn" class="share-btn" disabled title="Generate a shareable link for this trip">
+        🔗 Share Trip
+      </button>
+
+      <!-- Hidden by CSS / unused -->
+      <button id="themeToggle" class="theme-toggle-btn" title="Toggle theme">☀</button>
+
+      <div class="auth">
+        <button class="auth-btn" data-auth="login">Login</button>
+        <button class="auth-btn" data-auth="signup">Sign Up</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CHAT AREA -->
+  <main class="chat-main">
+    <!-- PREFERENCES / FILTERS (only for Trip Planner) -->
+    <section class="preferences-panel">
+      <div class="pref-group">
+        <div class="pref-label">No. of Days</div>
+        <div class="pref-options">
+          <label class="pref-chip">
+            <input type="radio" class="hidden-pref" name="days" value="1-2-days">
+            <span>1–2</span>
+          </label>
+          <label class="pref-chip">
+            <input type="radio" class="hidden-pref" name="days" value="3-5-days" checked>
+            <span>3–5</span>
+          </label>
+          <label class="pref-chip">
+            <input type="radio" class="hidden-pref" name="days" value="6-10-days">
+            <span>6–10</span>
+          </label>
+          <label class="pref-chip">
+            <input type="radio" class="hidden-pref" name="days" value="10+">
+            <span>10+</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="pref-group">
+        <div class="pref-label">Budget Range</div>
+        <div class="pref-options">
+          <label class="pref-chip">
+            <input type="checkbox" class="hidden-pref" name="budget" value="backpacker">
+            <span>Backpacker</span>
+          </label>
+          <label class="pref-chip">
+            <input type="checkbox" class="hidden-pref" name="budget" value="mid-range" checked>
+            <span>Mid Range</span>
+          </label>
+          <label class="pref-chip">
+            <input type="checkbox" class="hidden-pref" name="budget" value="premium">
+            <span>Premium</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="pref-group">
+        <div class="pref-label">Type of Areas</div>
+        <div class="pref-options" id="areaTypeContainer"></div>
+      </div>
+
+      <div class="pref-group">
+        <div class="pref-label">Activities</div>
+        <div class="pref-options" id="activityTypeContainer"></div>
+      </div>
+    </section>
+
+    <div class="chat-layout">
+      <div id="chat-container" class="chat-container"></div>
+
+      <aside class="map-panel">
+        <div class="map-panel-header">
+          <span>Trip Map</span>
+          <button id="toggleMapSizeBtn" class="map-toggle-btn" title="Expand map">⤢</button>
+        </div>
+        <div id="map"></div>
+      </aside>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea
+        id="userPrompt"
+        placeholder="Describe your trip (from, to, dates, vibe). Example: '5 days from Hyderabad to Goa in March, beaches + nightlife, mid budget'"
+      ></textarea>
+      <button id="submitBtn" class="send-btn" title="Send">➤</button>
+      <button id="reEvalBtn" class="re-btn" disabled title="Ask AI to refine the plan">
+        ♻
+      </button>
+      <button id="likeBtn" class="like-btn" disabled title="Like this plan">👍</button>
+      <button id="dislikeBtn" class="like-btn" disabled title="Dislike this plan">👎</button>
+    </div>
+  </main>
+</div>
+
+<!-- AUTH MODAL (shared by login + signup) -->
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-modal">
+    <button type="button" id="authCloseBtn" class="auth-close-btn">✕</button>
+    <h2 id="authTitle">Log in</h2>
+    <p id="authSubtitle">Welcome back. Please enter your details.</p>
+    <form id="authForm">
+      <label class="auth-label" for="authEmail">Email</label>
+      <input id="authEmail" type="email" class="auth-input" required>
+
+      <label class="auth-label" for="authPassword">Password</label>
+      <input id="authPassword" type="password" class="auth-input" required minlength="6">
+
+      <button type="submit" id="authSubmitBtn" class="auth-submit-btn">Log in</button>
+    </form>
+    <div id="authMessage" class="auth-message"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://gbhjdmqnxmmqfgiyatda.supabase.co";       // <<-- same as index.html
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiaGpkbXFueG1tcWZnaXlhdGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NDYyODIsImV4cCI6MjA4MDIyMjI4Mn0.CvpoPe9ryyfflnDMdkDKXINZWYlDeLT1umQWvmS_aYk";
+  if (SUPABASE_URL.startsWith("https://YOUR_") || SUPABASE_ANON_KEY.startsWith("YOUR_")) {
+    console.warn("Supabase keys are not set. Login/Signup will not work until you add them.");
+  } else {
+    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
