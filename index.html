@@ -90,7 +90,7 @@
     <div class="chat-input-area">
       <textarea
         id="userPrompt"
-        placeholder="Tell us what kind of day out you want (e.g. 'Chill day with cafes and parks near me')."
+        placeholder="Tell us what kind of day out you want (e.g., 'Chill day with cafes and parks near me')..."
       ></textarea>
       <button id="submitBtn" class="send-btn" title="Send">➤</button>
       <button id="reEvalBtn" class="re-btn" disabled title="Ask AI to refine the plan">
@@ -123,8 +123,8 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-  const SUPABASE_URL = "https://gbhjdmqnxmmqfgiyatda.supabase.co";       // <<-- NO trailing slash now
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiaGpkbXFueG1tcWZnaXlhdGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NDYyODIsImV4cCI6MjA4MDIyMjI4Mn0.CvpoPe9ryyfflnDMdkDKXINZWYlDeLT1umQWvmS_aYk";
+  const SUPABASE_URL = "https://gbhjdmqnxmmqfgiyatda.supabase.co/";       // <<-- paste from Supabase
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdiaGpkbXFueG1tcWZnaXlhdGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NDYyODIsImV4cCI6MjA4MDIyMjI4Mn0.CvpoPe9ryyfflnDMdkDKXINZWYlDeLT1umQWvmS_aYk";            // <<-- paste from Supabase
   if (SUPABASE_URL.startsWith("https://YOUR_") || SUPABASE_ANON_KEY.startsWith("YOUR_")) {
     console.warn("Supabase keys are not set. Login/Signup will not work until you add them.");
   } else {
