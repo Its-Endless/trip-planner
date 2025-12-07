@@ -1,5 +1,10 @@
 /* GLOBAL */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
 body {
   font-family: "Inter", sans-serif;
 }
@@ -74,7 +79,6 @@ body.light #userPrompt {
 .sidebar-link-text {
   font-weight: 600; /* bold */
 }
-
 
 /* Small delete button for trip history items */
 .trip-delete-btn {
@@ -481,31 +485,45 @@ body.map-expanded .chat-layout {
   background: #8f2f2f;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE – Android / mobile tweaks */
 @media (max-width: 900px) {
   .parent {
     grid-template-columns: 1fr;
     grid-template-rows: 70px auto;
+    height: auto;
+    min-height: 100dvh; /* use dynamic viewport height on mobile */
   }
+
   .sidebar {
     display: none;
   }
+
+  .chat-main {
+    height: auto;
+    min-height: calc(100dvh - 70px);
+    overflow: visible; /* allow whole page to scroll naturally */
+  }
+
   .chat-layout {
     flex-direction: column;
   }
+
   .map-panel {
     width: 100%;
     height: 220px;
     border-left: none;
     border-top: 1px solid #2d2d2d;
   }
+
   body.map-expanded .map-panel {
     width: 100%;
     height: 320px;
   }
+
   .chat-bubble {
     max-width: 100%;
   }
+
   .preferences-panel {
     grid-template-columns: 1fr;
   }
@@ -619,7 +637,7 @@ body.map-expanded .chat-layout {
   color: #4caf50;
 }
 
-/* Make sure auth modal works nicely on mobile */
+/* Make sure auth modal works nicely on very small phones */
 @media (max-width: 480px) {
   .auth-modal {
     width: 100%;
